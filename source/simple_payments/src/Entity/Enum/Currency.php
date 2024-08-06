@@ -2,7 +2,13 @@
 
 namespace App\Entity\Enum;
 
-enum Currency: string {
+use App\Entity\Enum\EnumValidate;
+
+use App\Entity\Enum\ValidateEnumTrait;
+
+enum Currency: string implements EnumValidate {
+    use ValidateEnumTrait;
     case USD = 'USD';
     case EUR = 'EUR';
+    case CHF = 'CHF';
 }

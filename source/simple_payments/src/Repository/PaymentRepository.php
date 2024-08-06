@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Payment;
+use App\Model\PaymentDto;
+use App\Model\PaymentUpdateDto;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
+use DateTimeImmutable;
 
 /**
  * @extends ServiceEntityRepository<Payment>
@@ -16,28 +20,17 @@ class PaymentRepository extends ServiceEntityRepository
         parent::__construct($registry, Payment::class);
     }
 
-    //    /**
-    //     * @return Payment[] Returns an array of Payment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function savePayment(PaymentDto $paymentDto,EntityManagerInterface $entityManager) : int {
+        $payment = new Payment();
+        $payment->setAmount($paymentDto->amount);
+        $payment->setCardNumber($paymentDto->cardNumber);
+        $payment->setCreatedAt(new DateTimeImmutable());
+        $payment->setCurrency($paymentDto->currency);
+        $payment->setPaymentType($paymentDto->payment_type);
 
-    //    public function findOneBySomeField($value): ?Payment
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $entityManager->persist($payment);
+        $entityManager->flush();
+
+        return $payment->getId();
+    }
 }

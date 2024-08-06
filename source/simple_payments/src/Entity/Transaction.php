@@ -24,19 +24,19 @@ class Transaction
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $amount = null;
 
-    #[ORM\Column(type: 'string',  enumType: Currency::class)]
+    #[ORM\Column]
+    //#[ORM\Column(type: 'string',  enumType: Currency::class)]
     private ?string $currency = null;
 
     #[ORM\Column(length: 255)]
     private ?string $cardBin = null;
 
-    /**
-     * @var Collection<int, Payment>
-     */
-    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'transaction')]
-    private Collection $payments;
+    #[ORM\OneToOne(targetEntity: Payment::class, inversedBy: 'transaction')]
+    #[ORM\JoinColumn(name: 'payment_id', referencedColumnName: 'id')]
+    private ?Payment $payment = null;
 
-    #[ORM\Column(type: 'string',  enumType: PaymentType::class)]
+    #[ORM\Column]
+    //#[ORM\Column(type: 'string',  enumType: PaymentType::class)]
     private ?string $paymentType = null;
 
     #[ORM\Column]
@@ -100,32 +100,14 @@ class Transaction
         return $this;
     }
 
-    /**
-     * @return Collection<int, Payment>
-     */
-    public function getPayments(): Collection
+    public function getPayment(): Collection
     {
-        return $this->payments;
+        return $this->payment;
     }
 
-    public function addPayment(Payment $payment): static
+    public function setPayment(Payment $payment): static
     {
-        if (!$this->payments->contains($payment)) {
-            $this->payments->add($payment);
-            $payment->setTransaction($this);
-        }
-
-        return $this;
-    }
-
-    public function removePayment(Payment $payment): static
-    {
-        if ($this->payments->removeElement($payment)) {
-            // set the owning side to null (unless already changed)
-            if ($payment->getTransaction() === $this) {
-                $payment->setTransaction(null);
-            }
-        }
+        $this->payment = $payment;
 
         return $this;
     }

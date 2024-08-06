@@ -19,22 +19,25 @@ class Payment
     #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2)]
     private ?string $amount = null;
 
-    #[ORM\Column(type: 'string',  enumType: Currency::class)]
+    #[ORM\Column]
+    //#[ORM\Column(type: 'string',  enumType: Currency::class)]
     private ?string $currency = null;
 
     #[ORM\Column(length: 19)]
     private ?string $cardNumber = null;
 
-    #[ORM\ManyToOne(inversedBy: 'payments')]
+    #[ORM\OneToOne(targetEntity: Transaction::class, mappedBy: 'id')]
     private ?Transaction $transaction = null;
 
-    #[ORM\Column]
+
+    #[ORM\Column(nullable: true)]
     private ?int $statusCode = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $error = null;
 
-    #[ORM\Column(type: 'string',  enumType: PaymentType::class)]
+    #[ORM\Column]
+    //#[ORM\Column(type: 'string',  enumType: PaymentType::class)]
     private ?string $paymentType = null;
 
     #[ORM\Column]
@@ -113,6 +116,18 @@ class Payment
     public function setPaymentType(string $paymentType): static
     {
         $this->paymentType = $paymentType;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?string
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(string $currency): static
+    {
+        $this->currency = $currency;
 
         return $this;
     }

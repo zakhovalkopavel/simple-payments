@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Payment;
 use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Model\TransactionDto;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @extends ServiceEntityRepository<Transaction>
@@ -16,28 +19,20 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    //    /**
-    //     * @return Transaction[] Returns an array of Transaction objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function saveTransaction(TransactionDto $transactionDto,EntityManagerInterface $entityManager) : int {
+        $transaction = new Transaction();
+        $transaction->setAmount($transactionDto->amount);
+        $transaction->setCardBin($transactionDto->cardBin);
+        $transaction->setCreatedAt($transactionDto->created_at);
+        $transaction->setCurrency($transactionDto->currency);
+        $transaction->setTransaction($transactionDto->transaction);
+        $payment = $entityManager->getRepository(Payment::class)->find($transactionDto->payment_id);
+        $transaction->setPayment($payment);
+        $transaction->setPaymentType($transactionDto->payment_type);
 
-    //    public function findOneBySomeField($value): ?Transaction
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $entityManager->persist($transaction);
+        $entityManager->flush();
+
+        return $transaction->getId();
+    }
 }
