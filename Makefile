@@ -20,7 +20,7 @@ php-bash:
 	docker-compose exec php bash
 
 symfony-init-project:
-	docker-compose exec php bash -c 'composer install && cd ${PHP_PROJECT_NAME} && composer install'
+	docker-compose exec php bash -c 'composer install && cd ${PHP_PROJECT_NAME} && composer install &&  php bin/console doctrine:migrations:migrate'
 symfony-create-project:
 	docker-compose exec php bash -c 'composer create-project symfony/skeleton:"${SYMFONY_VERSION}" ${PHP_PROJECT_NAME} \
 	&& cd ${PHP_PROJECT_NAME} && composer require symfony/orm-pack && composer require --dev symfony/maker-bundle'
@@ -43,3 +43,5 @@ symfony-set-files-permissions:
 	sudo find ./source/${PHP_PROJECT_NAME}/ -type d -exec chmod 755 {} \;
 	sudo chmod 777 -R ./source/${PHP_PROJECT_NAME}/var/cache/
 	sudo chmod 777 -R ./source/${PHP_PROJECT_NAME}/var/log/
+symfony-create-entity:
+	docker-compose exec php bash -c 'cd ${PHP_PROJECT_NAME} && php bin/console make:entity'
