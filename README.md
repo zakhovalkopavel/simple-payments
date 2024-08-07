@@ -4,7 +4,9 @@ Implementation of Shift4 and ACI payments based on PHP/Symfony
 
 
 Installation:
-    you have to run command below from the root of project: 
+    you have to run command below from the root of project
+    (one moment you have to type sudo password for changing 
+    file permissions and one or more time ENTER for continue):
 
     cp .env.example .env
     make init
