@@ -1,7 +1,7 @@
 SHELL  := /bin/bash
 include .env
 
-init: setup-env up status symfony-init-project symfony-set-env symfony-migrate
+init: up status symfony-set-env restart symfony-init-project symfony-regenerate-keys restart symfony-migrate
 create-project: setup-env restart symfony-create-project symfony-set-env
 
 restart: kill up status
@@ -45,8 +45,9 @@ symfony-set-env:
 	&& echo "APP_DEBUG=${APP_DEBUG}" >> ./${PHP_PROJECT_NAME}/.env \
 	&& echo "SHIFT4_API_KEY=${SHIFT4_API_KEY}" >> ./${PHP_PROJECT_NAME}/.env \
 	&& chown root:root ./${PHP_PROJECT_NAME}/.env \
-	&& chmod 644 ./${PHP_PROJECT_NAME}/.env \
-	&& cd ./${PHP_PROJECT_NAME} \
+	&& chmod 644 ./${PHP_PROJECT_NAME}/.env'
+symfony-regenerate-keys:
+	docker-compose exec php bash -c 'cd ./${PHP_PROJECT_NAME} \
 	&& php bin/console make:command regenerate-app-secret \
 	&& php bin/console regenerate-app-secret \
 	&& php bin/console secrets:generate-keys'
