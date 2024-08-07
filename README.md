@@ -8,6 +8,7 @@ Installation:
 
     cp .env.example .env
     make init
+    make symfony-migrate
 
 
 For making test request you can send data from Postman to an address:
