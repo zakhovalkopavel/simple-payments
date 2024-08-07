@@ -7,7 +7,10 @@ init:
 	&& make restart \
 	&& ( make symfony-init-project || true)\
 	&& make symfony-set-files-permissions \
-	&& make restart
+	&& make kill \
+	&& sudo rm -rf .docker/var/lib/mysql \
+	&& make restart \
+	&& make symfony-migrate
 create-project: setup-env restart symfony-create-project symfony-set-env
 
 restart: kill up status
