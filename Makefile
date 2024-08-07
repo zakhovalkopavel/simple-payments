@@ -6,10 +6,11 @@ init:
 	&& make symfony-set-env \
 	&& make restart \
 	&& ( make symfony-init-project || true)\
-	&& make symfony-set-files-permissions \
 	&& make kill \
-	&& sudo rm -rf .docker/var/lib/mysql \
+	&& make symfony-set-files-permissions \
+	&& sudo rm -rf ./docker/var/lib/mysql \
 	&& make restart \
+	&& sleep 20 \
 	&& make symfony-migrate
 create-project: setup-env restart symfony-create-project symfony-set-env
 
