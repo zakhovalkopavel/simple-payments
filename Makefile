@@ -1,7 +1,7 @@
 SHELL  := /bin/bash
 include .env
 
-init: up status symfony-set-env restart symfony-init-project symfony-regenerate-keys restart symfony-migrate
+init: up status symfony-set-env kill up symfony-init-project symfony-regenerate-keys kill up status symfony-migrate
 create-project: setup-env restart symfony-create-project symfony-set-env
 
 restart: kill up status
